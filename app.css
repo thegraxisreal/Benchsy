@@ -914,6 +914,8 @@ summary { cursor: pointer; }
 .compare-add label { display: block; font-size: 9px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .06em; }
 .compare-add select:disabled { opacity: .55; cursor: not-allowed; }
 .compare-share { width: 100%; margin-top: 8px; font-size: 11px; padding-block: 6px; }
+.rd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.rd-actions .btn { flex: 1 1 auto; }
 .compare-chip button:disabled { opacity: .3; cursor: not-allowed; }
 .compare-chip button:disabled:hover { color: var(--color-neutral-600); }
 

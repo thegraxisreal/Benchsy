@@ -339,7 +339,10 @@ function buildDetail(nodes, model) {
           <div class="rd-guideitem"><span class="rd-lab">Excels at</span><p data-f="strengths"></p></div>
           <div class="rd-guideitem"><span class="rd-lab">Tradeoffs</span><p data-f="weaknesses"></p></div>
           <div class="rd-guideitem"><span class="rd-lab">Choose it for</span><p data-f="uses"></p></div>
-          <button type="button" class="btn btn-primary rd-compare">Add to comparison</button>
+          <div class="rd-actions">
+            <button type="button" class="btn btn-primary rd-compare">Add to comparison</button>
+            <button type="button" class="btn btn-secondary rd-card">Share card</button>
+          </div>
         </section>
       </div>
     </div>`;
@@ -357,6 +360,9 @@ function buildDetail(nodes, model) {
   });
   nodes.detail.querySelector('.rd-compare')
     .addEventListener('click', () => addToCompare(model.id));
+
+  const cardButton = nodes.detail.querySelector('.rd-card');
+  cardButton.addEventListener('click', () => shareModelCard(model, cardButton));
 
   nodes.detailBuilt = true;
 }
