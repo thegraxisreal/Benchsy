@@ -5,3 +5,4 @@
 # Agent skill libraries installed into the project — not part of the site
 .agents/
 .claude/skills/
+skills-lock.json
