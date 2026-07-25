@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Benchsy — understand the AI model race</title>
+<meta name="description" content="A leaderboard for understanding which AI models lead in coding, writing, chat, science, computer use, and cybersecurity.">
+<link rel="stylesheet" href="./styles.css">
+<link rel="stylesheet" href="./app.css">
+<script>
+  (function () {
+    var saved = null;
+    try { saved = localStorage.getItem('benchsy-theme'); } catch (e) {}
+    var dark = saved ? saved === 'dark'
+      : window.matchMedia('(prefers-color-scheme: dark)').matches;
+    document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+  })();
+</script>
+</head>
+<body>
+<div class="page">
+
+  <nav class="nav">
+    <div class="nav-inner">
+      <a class="nav-brand" href="#leaderboard" data-view-link="leaderboard">
+        <span class="brand-mark"></span>
+        Benchsy
+      </a>
+      <div class="nav-links" aria-label="Primary navigation">
+        <a href="#leaderboard" data-view-link="leaderboard" aria-current="page">Leaderboard</a>
+        <a href="#pricing" data-view-link="pricing">Pricing</a>
+        <a href="#models" data-view-link="models">Models</a>
+        <a href="#labs" data-view-link="labs">Labs</a>
+        <a href="#compare" data-view-link="compare">Compare</a>
+      </div>
+      <button class="nav-method" id="methodology-open">Methodology</button>
+      <button class="btn btn-icon btn-secondary" id="search" aria-label="Search models">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      </button>
+      <button class="btn btn-icon btn-secondary" id="theme-toggle" aria-label="Toggle theme" aria-pressed="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+      </button>
+    </div>
+  </nav>
+
+  <main class="wrap">
+    <section class="hero">
+      <div class="hero-eyebrow">
+        <span class="hero-dot"></span>
+        <span class="text-muted" id="research-note">Researched snapshot</span>
+      </div>
+      <h1>See which AI models are <em>actually winning.</em></h1>
+      <div class="hero-meta">
+        <p class="hero-lede">A clear view of frontier performance across the work people actually use AI for.</p>
+        <div class="hero-rule"></div>
+        <div class="hero-stats text-muted">
+          <span id="research-date"></span>
+          <span id="model-count"></span>
+        </div>
+      </div>
+    </section>
+
+    <section class="product-view is-active" id="view-leaderboard" data-view="leaderboard">
+      <div class="section-intro">
+        <div>
+          <div class="section-kicker">The model race</div>
+          <h2 id="leaderboard-title">Overall leaderboard</h2>
+        </div>
+        <button class="quiet-link" id="overall-explain">How is this calculated?</button>
+      </div>
+
+      <div class="board-head">
+        <div class="seg" id="categories" role="radiogroup" aria-label="Leaderboard category"></div>
+        <div class="board-legend text-muted">
+          <span>Benchsy score</span>
+          <span>New this month</span>
+        </div>
+      </div>
+
+      <div class="board-column-head text-muted">
+        <span>Rank &amp; model</span><span>Capability</span><span>Score</span><span>New</span><span aria-hidden="true"></span>
+      </div>
+      <div class="board" id="board" role="list" aria-label="Model rankings"></div>
+      <p class="board-hint text-muted">Select any model to open its full profile.</p>
+
+      <section class="feed-section">
+        <div class="section-intro compact">
+          <div>
+            <div class="section-kicker">Recent releases</div>
+            <h2>What changed</h2>
+          </div>
+          <span class="text-muted update-note">From provider announcements</span>
+        </div>
+        <div id="feed"></div>
+      </section>
+    </section>
+
+    <section class="product-view" id="view-pricing" data-view="pricing" hidden>
+      <div class="section-intro">
+        <div>
+          <div class="section-kicker">API economics</div>
+          <h2>Price changes the answer.</h2>
+          <p class="section-copy text-muted">Compare output cost at a glance, then switch to cheapest or strongest value.</p>
+        </div>
+        <div class="seg" id="pricing-mode" role="radiogroup" aria-label="Pricing ranking">
+          <label class="seg-opt"><input type="radio" name="pricing" value="expensive" checked>Most expensive</label>
+          <label class="seg-opt"><input type="radio" name="pricing" value="cheapest">Cheapest</label>
+          <label class="seg-opt"><input type="radio" name="pricing" value="value">Best value</label>
+        </div>
+      </div>
+      <div class="pricing-axis text-muted"><span>Model</span><span>Output price per 1M tokens</span></div>
+      <div class="pricing-chart" id="pricing-chart"></div>
+      <p class="data-footnote text-muted">Standard published list prices per million tokens, excluding caching, batch discounts, and temporary launch or regional rates.</p>
+    </section>
+
+    <section class="product-view" id="view-models" data-view="models" hidden>
+      <div class="section-intro">
+        <div>
+          <div class="section-kicker">Model index</div>
+          <h2>All tracked models</h2>
+          <p class="section-copy text-muted">Scan the field, then open any model in the leaderboard.</p>
+        </div>
+        <label class="model-filter">
+          <span class="sr-only">Filter models</span>
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input id="model-filter" type="search" placeholder="Search models or labs">
+        </label>
+      </div>
+      <div class="model-index-head text-muted">
+        <span>Model</span><span>Best category</span><span>Overall</span><span>Input / output</span>
+      </div>
+      <div class="model-index" id="model-index"></div>
+    </section>
+
+    <section class="product-view" id="view-labs" data-view="labs" hidden>
+      <div class="section-intro">
+        <div>
+          <div class="section-kicker">The lab race</div>
+          <h2>Who has the strongest lineup?</h2>
+          <p class="section-copy text-muted">Labs are ranked by their best model in each Benchsy category—not by model count.</p>
+        </div>
+      </div>
+      <div class="labs-layout">
+        <div class="lab-race" id="lab-race" role="list" aria-label="Lab rankings"></div>
+        <aside class="lab-detail" id="lab-detail" aria-live="polite"></aside>
+      </div>
+    </section>
+
+    <section class="product-view" id="view-compare" data-view="compare" hidden>
+      <div class="section-intro">
+        <div>
+          <div class="section-kicker">Decision mode</div>
+          <h2>Which model should you use?</h2>
+          <p class="section-copy text-muted">Pick two or three. Benchsy will make the tradeoffs visible.</p>
+        </div>
+      </div>
+      <div class="compare-picker">
+        <div class="compare-slots" id="compare-slots"></div>
+        <div class="compare-add">
+          <label for="compare-select" class="text-muted">Add a model</label>
+          <select id="compare-select" class="input"></select>
+        </div>
+      </div>
+      <div class="compare-summary" id="compare-summary"></div>
+      <div class="compare-grid" id="compare-grid"></div>
+      <div class="compare-facts" id="compare-facts"></div>
+    </section>
+  </main>
+</div>
+
+<dialog class="method-dialog" id="methodology-dialog">
+  <form method="dialog" class="method-shell">
+    <div class="method-head">
+      <div>
+        <div class="section-kicker">Methodology</div>
+        <h2>Overall is a composite, not a verdict.</h2>
+      </div>
+      <button class="btn btn-icon btn-secondary" value="close" aria-label="Close methodology">×</button>
+    </div>
+    <p class="text-muted">Benchsy weights six practical capabilities. A specialist can be the right choice even when it ranks lower Overall.</p>
+    <div class="weight-list" id="weight-list"></div>
+    <div class="method-callout">
+      <strong>How to read the scores</strong>
+      <span>Prices, context windows, release dates and status come from provider documentation. The 0–100 capability scores are Benchsy's own normalization across the tracked set — 100 is the best result in this field, not a perfect score — and each one carries its benchmark basis on hover in the fingerprint panel.</span>
+    </div>
+    <div class="method-sources">
+      <div class="section-kicker">Primary sources</div>
+      <div class="source-list" id="source-list"></div>
+    </div>
+  </form>
+</dialog>
+
+<div class="search-overlay" id="search-overlay" hidden>
+  <button class="search-scrim" id="search-close" aria-label="Close search"></button>
+  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search models">
+    <label class="search-input">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+      <input id="global-search" type="search" placeholder="Search models or labs" autocomplete="off">
+      <kbd>ESC</kbd>
+    </label>
+    <div id="search-results" class="search-results"></div>
+  </div>
+</div>
+
+<script src="./data.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

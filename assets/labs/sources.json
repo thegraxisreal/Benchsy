@@ -1,0 +1,92 @@
+{
+  "retrieved": "2026-07-23",
+  "logos": [
+    {
+      "slug": "openai",
+      "lab": "OpenAI",
+      "file": "openai.svg",
+      "darkFile": "openai-dark.svg",
+      "source": "https://cdn.openai.com/brand/openai-logos.zip",
+      "darkSource": "https://cdn.openai.com/brand/openai-logos.zip",
+      "termsSource": "https://openai.com/brand/",
+      "official": true,
+      "kind": "icon",
+      "terms": "Use the logo only when it directly relates to OpenAI services; use it exactly as provided; do not imply endorsement or sponsorship, use it more prominently than your own marks, place it on merchandise, or modify or incorporate it into another brand."
+    },
+    {
+      "slug": "anthropic",
+      "lab": "Anthropic",
+      "file": "anthropic.svg",
+      "darkFile": "anthropic-dark.svg",
+      "source": "https://www-cdn.anthropic.com/ae59ca4ca194dac9c9dc3bc78c5829468cb0e8af.zip",
+      "darkSource": "https://www-cdn.anthropic.com/ae59ca4ca194dac9c9dc3bc78c5829468cb0e8af.zip",
+      "termsSource": "https://www.anthropic.com/news",
+      "official": true,
+      "kind": "icon",
+      "terms": null
+    },
+    {
+      "slug": "google",
+      "lab": "Google",
+      "file": "google.svg",
+      "source": "https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg",
+      "termsSource": "https://developers.google.com/identity/branding-guidelines",
+      "official": true,
+      "kind": "icon",
+      "terms": "Do not change the Google G logo's color or create a replacement icon; use the standard-color version. Google's general Brand Resource Center may require permission depending on context."
+    },
+    {
+      "slug": "xai",
+      "lab": "xAI",
+      "file": "xai.svg",
+      "source": "https://upload.wikimedia.org/wikipedia/commons/5/57/XAI-Logo.svg",
+      "termsSource": "https://commons.wikimedia.org/wiki/File:XAI-Logo.svg",
+      "official": false,
+      "kind": "icon",
+      "terms": "Wikimedia Commons identifies the author as X.AI Corp., the original source as x.ai, and the artwork as public-domain simple geometry; trademark restrictions may still apply.",
+      "darkNote": "The current xAI brand kit has been replaced by SpaceXAI assets. No official inverse variant of this historical xAI mark was available, so no dark file was created."
+    },
+    {
+      "slug": "moonshot",
+      "lab": "Moonshot AI",
+      "file": "moonshot.svg",
+      "source": "https://unpkg.com/@lobehub/icons-static-svg@1.94.0/icons/moonshot.svg",
+      "termsSource": "https://github.com/lobehub/lobe-icons",
+      "official": false,
+      "kind": "icon",
+      "terms": "The Lobe Icons package is MIT licensed; Moonshot AI trademark rights remain with their owner.",
+      "darkNote": "Moonshot AI publishes only a 28x28 favicon on its own site. No official inverse vector was found, so no dark file was created."
+    },
+    {
+      "slug": "zhipu",
+      "lab": "Zhipu AI",
+      "file": "zhipu.svg",
+      "darkFile": "zhipu-dark.svg",
+      "source": "https://www.zhipuai.cn/logo-en.svg",
+      "darkSource": "https://www.zhipuai.cn/logo-en-white.svg",
+      "official": true,
+      "kind": "wordmark",
+      "terms": null
+    },
+    {
+      "slug": "alibaba",
+      "lab": "Alibaba",
+      "file": "alibaba.png",
+      "source": "https://ali-home-data.oss-cn-hangzhou.aliyuncs.com/ecms-files/886024452/ae99cd49-2667-464e-b9db-b39cee0126e1.png",
+      "termsSource": "https://home.alibabagroup.com/en-US/resource-logos",
+      "official": true,
+      "kind": "wordmark",
+      "terms": "Editorial use only by accredited media; credit \"Source: www.alibabagroup.com.\" Other use requires written permission. Images may be proportionally resized but not otherwise altered."
+    },
+    {
+      "slug": "deepseek",
+      "lab": "DeepSeek",
+      "file": "deepseek.svg",
+      "source": "https://www.deepseek.com/en/",
+      "official": true,
+      "kind": "wordmark",
+      "terms": null
+    }
+  ],
+  "missing": []
+}
