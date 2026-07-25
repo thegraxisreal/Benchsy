@@ -4,10 +4,12 @@ Interactive frontend concept for understanding the AI model landscape at a
 glance. Benchsy shows which models lead overall and where specialists win
 across coding, writing, chat, science, computer use, and cybersecurity.
 
-The board tracks 16 frontier models from 8 labs, researched on **July 22, 2026**.
+The board tracks 17 frontier models from 8 labs, researched on **July 22, 2026**.
 Prices, context windows, release dates and status come from provider
 documentation; the 0–100 capability scores are Benchsy's own normalization
-across the tracked set, with the benchmark basis recorded for every score.
+across the tracked set, with the benchmark basis recorded for every score. The
+scale leaves headroom above the current field — the strongest result sits at 98,
+not 100 — so a stronger model can be added without rescaling the whole board.
 
 Built from the `Benchsy.dc.html` design in the
 [Claude Design project](https://claude.ai/design/p/47a4a80c-8113-4e27-8317-3eff0129dcb8).
@@ -17,11 +19,17 @@ Built from the `Benchsy.dc.html` design in the
 Static site, no build step:
 
 ```bash
-python3 -m http.server 4173
+python3 serve.py
 ```
 
 Then open http://localhost:4173. (Open `index.html` over `file://` and the
 browser will refuse to load `data.js` / `app.js` — use the server.)
+
+`serve.py` is `http.server` with caching turned off. The stdlib server sends
+`Last-Modified` and no `Cache-Control`, so browsers heuristically cache
+`data.js` and `app.js` and keep serving a stale board after you edit the data.
+`serve.py` sends `no-store` and strips the validators, so a plain reload always
+shows current data. Pass a port to override the default: `python3 serve.py 8080`.
 
 ## Files
 
@@ -34,6 +42,9 @@ browser will refuse to load `data.js` / `app.js` — use the server.)
 | `app.js` | Rendering, view navigation, sorting, selection, comparison, search, and dialogs. |
 | `benchsy-research.json` | The research record `data.js` was derived from — one entry per model, including the benchmark basis for each score. |
 | `benchsy-research-sources.md` | Primary sources, by lab, behind the research record. |
+| `serve.py` | Dev server — `http.server` with caching disabled so data edits always show. |
+| `assets/og-source.html` | Source for the link-preview card. Edit this, never `og.png`. |
+| `tools/make-og.sh` | Re-renders `assets/og.png` and `assets/apple-touch-icon.png` via headless Chrome. |
 
 ## How the board works
 
@@ -63,6 +74,15 @@ const CONFIG = {
   only light tokens, so `app.css` adds a `:root[data-theme="dark"]` palette that
   mirrors each ramp. It follows the OS preference on first visit and remembers
   the choice in `localStorage`.
+- **Before deploying, replace the placeholder domain.** `index.html` carries
+  `https://your-domain.example` in four tags — `canonical`, `og:url`, `og:image`
+  and `twitter:image`. Scrapers won't resolve relative paths, so link previews
+  stay broken until those are the real domain. Re-run `./tools/make-og.sh` if you
+  change the card artwork.
+- **The board states its own age.** `RESEARCH_ISO` in `data.js` drives a chip in
+  the hero that reads "researched today", "12 days old", "3 weeks old", and
+  escalates tone past 14 and 45 days. Bump `RESEARCH_DATE` and `RESEARCH_ISO`
+  together on every refresh — that's the whole maintenance ritual.
 - **Scores are a snapshot, not a feed.** The research covers a single day, so
   the board shows which models are new this month rather than week-over-week
   rank movement, and "What changed" carries real releases and pricing facts

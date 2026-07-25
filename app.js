@@ -756,11 +756,47 @@ function initTheme() {
   sync();
 }
 
+/* ── research age ────────────────────────────────────────────────────
+   The board is a hand-researched snapshot, so it goes stale on its own.
+   Rather than let it quietly misrepresent the field, the hero states how
+   old it is and escalates tone as it ages. */
+
+const AGE_TIERS = [
+  { maxDays: 14, tone: 'fresh' },
+  { maxDays: 45, tone: 'aging' },
+  { maxDays: Infinity, tone: 'stale' },
+];
+
+function researchAge() {
+  const researched = new Date(`${RESEARCH_ISO}T00:00:00`);
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  const days = Math.max(0, Math.round((today - researched) / 86400000));
+
+  let label;
+  if (days === 0) label = 'researched today';
+  else if (days === 1) label = 'researched yesterday';
+  else if (days < 14) label = `${days} days old`;
+  else if (days < 60) label = `${Math.round(days / 7)} weeks old`;
+  else label = `${Math.round(days / 30)} months old`;
+
+  const tone = AGE_TIERS.find((tier) => days <= tier.maxDays).tone;
+  return { days, label, tone };
+}
+
 /* ── boot ───────────────────────────────────────────────────────────── */
 
+const age = researchAge();
 document.getElementById('model-count').textContent = `${MODELS.length} models · ${LABS.length} labs`;
 document.getElementById('research-date').textContent = `Researched ${RESEARCH_DATE}`;
 document.getElementById('research-note').textContent = `Frontier snapshot · ${RESEARCH_DATE}`;
+
+const ageEl = document.getElementById('research-age');
+ageEl.textContent = age.label;
+ageEl.dataset.tone = age.tone;
+ageEl.title = age.tone === 'fresh'
+  ? 'This snapshot is current.'
+  : 'The model landscape moves fast — figures may no longer reflect the current field.';
 renderCategories();
 renderBoard();
 renderFeed();

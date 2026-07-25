@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<!-- Source for assets/og.png. Rendered at exactly 1200x630 by tools/make-og.sh.
+     Edit here, re-run that script, never hand-edit the PNG. -->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600&family=Lora:wght@400;600&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    width: 1200px;
+    height: 630px;
+    overflow: hidden;
+    background: #171615;
+    color: #f2efec;
+    font-family: "Lora", Georgia, serif;
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    padding: 58px 64px;
+    /* A warm bloom behind the headline, echoing the accent ramp. */
+    background-image: radial-gradient(
+      780px 420px at 12% -12%,
+      rgba(182, 130, 53, 0.20),
+      transparent 70%
+    );
+  }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 11px;
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-size: 30px;
+    font-weight: 600;
+    color: #e1ad66;
+    letter-spacing: 0.01em;
+  }
+  .dot {
+    width: 11px; height: 11px; border-radius: 50%;
+    background: #b68235;
+    box-shadow: 0 0 0 5px rgba(182, 130, 53, 0.14);
+  }
+
+  h1 {
+    font-family: "Cormorant Garamond", Georgia, serif;
+    font-weight: 600;
+    font-size: 92px;
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    max-width: 17ch;
+    align-self: center;
+  }
+  h1 em { font-style: normal; color: #f0c07f; }
+
+  .foot {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 40px;
+    border-top: 1px solid rgba(242, 239, 236, 0.14);
+    padding-top: 22px;
+  }
+  .lede {
+    font-size: 21px;
+    line-height: 1.45;
+    color: rgba(242, 239, 236, 0.66);
+    max-width: 30ch;
+  }
+  .cats {
+    display: flex;
+    gap: 9px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: 46ch;
+  }
+  .cat {
+    font-size: 15px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: rgba(242, 239, 236, 0.78);
+    border: 1px solid rgba(242, 239, 236, 0.20);
+    border-radius: 3px;
+    padding: 6px 13px;
+    white-space: nowrap;
+  }
+  .cat.is-lead {
+    color: #171615;
+    background: #e1ad66;
+    border-color: #e1ad66;
+  }
+</style>
+</head>
+<body>
+  <div class="brand"><span class="dot"></span>Benchsy</div>
+
+  <h1>See which AI models are <em>actually winning.</em></h1>
+
+  <div class="foot">
+    <p class="lede">Frontier performance across the work people actually use AI for.</p>
+    <div class="cats">
+      <span class="cat is-lead">Overall</span>
+      <span class="cat">Coding</span>
+      <span class="cat">Writing</span>
+      <span class="cat">Chat</span>
+      <span class="cat">Science</span>
+      <span class="cat">Computer use</span>
+      <span class="cat">Cyber</span>
+    </div>
+  </div>
+</body>
+</html>

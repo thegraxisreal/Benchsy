@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Benchsy">
+  <rect width="64" height="64" rx="13" fill="#171615"/>
+  <!-- The three-bar leaderboard motif, in the accent ramp: the board's
+       ranked rows reduced to a mark that still reads at 16px. -->
+  <rect x="14" y="17" width="36" height="7" rx="3.5" fill="#e1ad66"/>
+  <rect x="14" y="28.5" width="26" height="7" rx="3.5" fill="#b68235"/>
+  <rect x="14" y="40" width="16" height="7" rx="3.5" fill="#7d5411"/>
+</svg>

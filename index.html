@@ -5,6 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Benchsy — understand the AI model race</title>
 <meta name="description" content="A leaderboard for understanding which AI models lead in coding, writing, chat, science, computer use, and cybersecurity.">
+
+<!-- Absolute URLs, pinned to the deployed origin. og:image and og:url must be
+     absolute — most scrapers (Slack, iMessage, X, Facebook, Discord) will not
+     resolve relative paths. If the site moves to a custom domain, update all
+     four: canonical, og:url, og:image, twitter:image. -->
+<link rel="canonical" href="https://thegraxisreal.github.io/Benchsy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Benchsy">
+<meta property="og:url" content="https://thegraxisreal.github.io/Benchsy/">
+<meta property="og:title" content="Benchsy — see which AI models are actually winning">
+<meta property="og:description" content="Frontier performance across the work people actually use AI for: coding, writing, chat, science, computer use, and cybersecurity.">
+<meta property="og:image" content="https://thegraxisreal.github.io/Benchsy/assets/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Benchsy — See which AI models are actually winning.">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Benchsy — see which AI models are actually winning">
+<meta name="twitter:description" content="Frontier performance across the work people actually use AI for: coding, writing, chat, science, computer use, and cybersecurity.">
+<meta name="twitter:image" content="https://thegraxisreal.github.io/Benchsy/assets/og.png">
+
+<link rel="icon" href="./assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="./assets/apple-touch-icon.png">
+<meta name="theme-color" content="#171615" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f3f2f2" media="(prefers-color-scheme: light)">
+
 <link rel="stylesheet" href="./styles.css">
 <link rel="stylesheet" href="./app.css">
 <script>
@@ -55,6 +81,7 @@
         <div class="hero-rule"></div>
         <div class="hero-stats text-muted">
           <span id="research-date"></span>
+          <span class="age-chip" id="research-age"></span>
           <span id="model-count"></span>
         </div>
       </div>
@@ -181,7 +208,7 @@
     <div class="weight-list" id="weight-list"></div>
     <div class="method-callout">
       <strong>How to read the scores</strong>
-      <span>Prices, context windows, release dates and status come from provider documentation. The 0–100 capability scores are Benchsy's own normalization across the tracked set — 100 is the best result in this field, not a perfect score — and each one carries its benchmark basis on hover in the fingerprint panel.</span>
+      <span>Prices, context windows, release dates and status come from provider documentation. The 0–100 capability scores are Benchsy's own normalization across the tracked set — the scale leaves headroom above today's leaders, so the strongest current result sits at 98 rather than a perfect 100 — and each one carries its benchmark basis on hover in the fingerprint panel.</span>
     </div>
     <div class="method-sources">
       <div class="section-kicker">Primary sources</div>

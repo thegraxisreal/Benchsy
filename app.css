@@ -178,6 +178,55 @@ summary { cursor: pointer; }
   font-variant-numeric: tabular-nums;
 }
 
+/* The snapshot states its own age. Fresh reads as quiet metadata; aging and
+   stale escalate so the board never silently misrepresents the field. */
+.age-chip {
+  align-self: flex-start;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-block: 1px;
+  padding: 2px 7px;
+  border-radius: calc(var(--radius-md) * 0.75);
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  cursor: default;
+}
+.age-chip::before {
+  content: '';
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.age-chip[data-tone='fresh'] {
+  background: color-mix(in srgb, var(--color-accent) 12%, transparent);
+  color: var(--color-accent-700);
+}
+.age-chip[data-tone='aging'] {
+  background: var(--color-accent-200);
+  color: var(--color-accent-800);
+}
+.age-chip[data-tone='stale'] {
+  background: var(--color-accent-300);
+  color: var(--color-accent-900);
+  font-weight: 600;
+}
+:root[data-theme='dark'] .age-chip[data-tone='fresh'] {
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent-300);
+}
+:root[data-theme='dark'] .age-chip[data-tone='aging'] {
+  background: color-mix(in srgb, var(--color-accent) 26%, transparent);
+  color: var(--color-accent-200);
+}
+:root[data-theme='dark'] .age-chip[data-tone='stale'] {
+  background: color-mix(in srgb, var(--color-accent) 38%, transparent);
+  color: #fff3e4;
+}
+
 .page.is-secondary .hero { display: none; }
 .page.is-secondary .product-view { padding-top: 54px; }
 
