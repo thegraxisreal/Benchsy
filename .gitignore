@@ -1,3 +1,7 @@
 .DS_Store
 *.log
 .claude/settings.local.json
+
+# Agent skill libraries installed into the project — not part of the site
+.agents/
+.claude/skills/
