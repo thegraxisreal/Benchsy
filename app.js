@@ -15,8 +15,14 @@ const state = {
   expandedId: null,
   pricingMode: 'expensive',
   selectedLab: null,
-  compareIds: ['gpt-5-6-terra', 'claude-sonnet-5', 'gemini-3-6-flash'],
+  // Seeded at boot from the live data rather than hardcoded ids, so the
+  // default comparison stays meaningful as models come and go. Starts at two,
+  // not three, so "Add a model" is usable on arrival instead of disabled.
+  compareIds: [],
 };
+
+const COMPARE_MAX = 3;
+const COMPARE_MIN = 2;
 
 const el = {
   categories: document.getElementById('categories'),
@@ -34,6 +40,8 @@ const el = {
   compareSummary: document.getElementById('compare-summary'),
   compareGrid: document.getElementById('compare-grid'),
   compareFacts: document.getElementById('compare-facts'),
+  compareAddLabel: document.getElementById('compare-add-label'),
+  compareShare: document.getElementById('compare-share'),
   methodologyDialog: document.getElementById('methodology-dialog'),
   weightList: document.getElementById('weight-list'),
   sourceList: document.getElementById('source-list'),
@@ -114,7 +122,7 @@ function showView(view, options = {}) {
     else link.removeAttribute('aria-current');
   });
 
-  if (!options.fromHash) history.replaceState(null, '', `#${nextView}`);
+  if (!options.fromHash) history.replaceState(null, '', hashFor(nextView));
   if (nextView === 'pricing') renderPricing();
   if (nextView === 'models') renderModelIndex(el.modelFilter.value);
   if (nextView === 'labs') renderLabs();
@@ -129,9 +137,32 @@ document.querySelectorAll('[data-view-link]').forEach((link) => {
   });
 });
 
-window.addEventListener('hashchange', () => {
-  showView(location.hash.slice(1) || 'leaderboard', { fromHash: true });
-});
+/* ── hash routing ────────────────────────────────────────────────────
+   Views are plain fragments (#pricing), except Compare, which carries its
+   selection (#compare=claude-opus-5,grok-4-5) so a comparison can be linked
+   and shared — the one thing on this page people actually want to send
+   someone. Unknown ids are dropped rather than rendered as blanks. */
+
+function hashFor(view) {
+  if (view === 'compare' && state.compareIds.length) {
+    return `#compare=${state.compareIds.join(',')}`;
+  }
+  return `#${view}`;
+}
+
+function applyHash() {
+  const [view, params] = location.hash.slice(1).split('=');
+  if (view === 'compare' && params) {
+    const ids = params.split(',')
+      .map((id) => decodeURIComponent(id.trim()))
+      .filter((id, index, all) => modelById(id) && all.indexOf(id) === index)
+      .slice(0, COMPARE_MAX);
+    if (ids.length >= COMPARE_MIN) state.compareIds = ids;
+  }
+  showView(view || 'leaderboard', { fromHash: true });
+}
+
+window.addEventListener('hashchange', applyHash);
 
 /* ── category control ───────────────────────────────────────────────── */
 
@@ -384,7 +415,7 @@ function toggleRow(id) {
 
 function addToCompare(id) {
   if (!state.compareIds.includes(id)) {
-    if (state.compareIds.length === 3) state.compareIds.shift();
+    if (state.compareIds.length === COMPARE_MAX) state.compareIds.shift();
     state.compareIds.push(id);
   }
   showView('compare', { scroll: true });
@@ -649,46 +680,69 @@ function renderCompare() {
     const slot = document.createElement('div');
     slot.className = 'compare-chip';
     slot.innerHTML = `<i class="lab-mark${markClass(model.lab)}">${labMark(model.lab, model.initials)}</i><span><strong>${model.name}</strong><small>${model.lab}</small></span><button type="button" aria-label="Remove ${model.name}">×</button>`;
-    slot.querySelector('button').addEventListener('click', () => {
-      if (state.compareIds.length <= 2) return;
+    // At the minimum, removal is genuinely unavailable — say so with a
+    // disabled control instead of letting the click land and do nothing.
+    const remove = slot.querySelector('button');
+    remove.disabled = state.compareIds.length <= COMPARE_MIN;
+    remove.title = remove.disabled
+      ? `Comparison needs at least ${COMPARE_MIN} models`
+      : `Remove ${model.name}`;
+    remove.addEventListener('click', () => {
+      if (state.compareIds.length <= COMPARE_MIN) return;
       state.compareIds = state.compareIds.filter((id) => id !== model.id);
-      renderCompare();
+      syncCompare();
     });
     el.compareSlots.append(slot);
   });
 
-  el.compareSelect.innerHTML = '<option value="">Choose model…</option>';
+  const full = state.compareIds.length >= COMPARE_MAX;
+  el.compareSelect.innerHTML = `<option value="">${full ? 'Remove one to add another' : 'Choose model…'}</option>`;
   MODELS.filter((model) => !state.compareIds.includes(model.id)).forEach((model) => {
     const option = document.createElement('option');
     option.value = model.id;
     option.textContent = `${model.name} — ${model.lab}`;
     el.compareSelect.append(option);
   });
-  el.compareSelect.disabled = state.compareIds.length >= 3;
+  el.compareSelect.disabled = full;
+  el.compareAddLabel.textContent = full ? `${COMPARE_MAX} of ${COMPARE_MAX} selected` : 'Add a model';
 
+  /* Category wins count the six capabilities only. Overall is a weighted
+     composite of those six, so counting it too would let one model bank the
+     same advantage twice. Ties credit every model that tied. */
   const wins = Object.fromEntries(selected.map((model) => [model.id, 0]));
-  CATEGORIES.forEach((category) => {
-    const winner = selected.slice().sort((a, b) => b.scores[category.key] - a.scores[category.key])[0];
-    wins[winner.id] += 1;
+  SCORE_CATEGORIES.forEach((category) => {
+    const best = Math.max(...selected.map((model) => model.scores[category.key]));
+    selected.filter((model) => model.scores[category.key] === best)
+      .forEach((model) => { wins[model.id] += 1; });
   });
   const overallWinner = selected.slice().sort((a, b) => b.scores.overall - a.scores.overall)[0];
   const budgetWinner = selected.slice().sort((a, b) => (a.inputPrice + a.outputPrice) - (b.inputPrice + b.outputPrice))[0];
   const speedWinner = selected.slice().sort((a, b) => b.speedScore - a.speedScore)[0];
 
+  const winCount = (model) => `${wins[model.id]} of ${SCORE_CATEGORIES.length} capability wins`;
   el.compareSummary.innerHTML = `
-    <div><span class="section-kicker">Best all-rounder</span><strong>${overallWinner.name}</strong><p>${overallWinner.scores.overall.toFixed(1)} Overall with ${wins[overallWinner.id]} category wins.</p></div>
+    <div><span class="section-kicker">Best all-rounder</span><strong>${overallWinner.name}</strong><p>${overallWinner.scores.overall.toFixed(1)} Overall with ${winCount(overallWinner)}.</p></div>
     <div><span class="section-kicker">Budget pick</span><strong>${budgetWinner.name}</strong><p>${formatPrice(budgetWinner.inputPrice)} in and ${formatPrice(budgetWinner.outputPrice)} out per 1M.</p></div>
     <div><span class="section-kicker">Speed pick</span><strong>${speedWinner.name}</strong><p>${speedWinner.speed} responses with a ${speedWinner.speedScore}/100 speed index.</p></div>`;
+
+  /* Every score in the set sits between roughly 79 and 98, so bars drawn as a
+     raw percentage all render nearly full and communicate nothing. Anchor the
+     scale just below the weakest value on show — the same technique the
+     leaderboard uses — so the gaps people came here to see are visible. */
+  const shown = selected.flatMap((model) => CATEGORIES.map((c) => model.scores[c.key]));
+  const floor = Math.min(...shown) - 4;
+  const ceiling = Math.max(...shown);
+  const barWidth = (score) => Math.max(8, ((score - floor) / (ceiling - floor)) * 100);
 
   el.compareGrid.innerHTML = `
     <div class="compare-grid-head"><span>Capability</span>${selected.map((model) => `<strong>${model.name}</strong>`).join('')}</div>
     ${CATEGORIES.map((category) => {
       const max = Math.max(...selected.map((model) => model.scores[category.key]));
-      return `<div class="compare-capability">
+      return `<div class="compare-capability${category.key === 'overall' ? ' is-overall' : ''}">
         <span>${category.label}</span>
         ${selected.map((model) => {
           const score = model.scores[category.key];
-          return `<div class="${score === max ? 'is-winner' : ''}"><i><b style="width:${score}%"></b></i><strong>${score.toFixed(1)}</strong></div>`;
+          return `<div class="${score === max ? 'is-winner' : ''}"><i><b style="width:${barWidth(score).toFixed(1)}%"></b></i><strong>${score.toFixed(1)}</strong></div>`;
         }).join('')}
       </div>`;
     }).join('')}`;
@@ -708,12 +762,41 @@ function renderCompare() {
         `<strong class="${fact.numeric[index] === winningValue ? 'is-winner' : ''}">${value}</strong>`
       ).join('')}</div>`;
     }).join('')}`;
+
+  // The grids were hardcoded to three columns, which left a phantom empty
+  // column whenever two models were compared. Drive the track count instead.
+  [el.compareGrid, el.compareFacts].forEach((node) => {
+    node.style.setProperty('--compare-cols', String(selected.length));
+  });
+}
+
+/* Render, then keep the address bar in step so the URL is always shareable. */
+function syncCompare() {
+  renderCompare();
+  history.replaceState(null, '', hashFor('compare'));
 }
 
 el.compareSelect.addEventListener('change', () => {
-  if (!el.compareSelect.value || state.compareIds.length >= 3) return;
+  if (!el.compareSelect.value || state.compareIds.length >= COMPARE_MAX) return;
   state.compareIds.push(el.compareSelect.value);
-  renderCompare();
+  syncCompare();
+});
+
+el.compareShare.addEventListener('click', async () => {
+  const url = `${location.origin}${location.pathname}${hashFor('compare')}`;
+  const done = (text) => {
+    el.compareShare.textContent = text;
+    setTimeout(() => { el.compareShare.textContent = 'Copy link'; }, 1800);
+  };
+  try {
+    await navigator.clipboard.writeText(url);
+    done('Copied');
+  } catch {
+    // Clipboard access can be denied or unavailable over insecure origins;
+    // selecting the URL still lets the user copy it by hand.
+    window.prompt('Copy this comparison link', url);
+    done('Copy link');
+  }
 });
 
 /* ── methodology and theme ──────────────────────────────────────────── */
@@ -797,10 +880,19 @@ ageEl.dataset.tone = age.tone;
 ageEl.title = age.tone === 'fresh'
   ? 'This snapshot is current.'
   : 'The model landscape moves fast — figures may no longer reflect the current field.';
+/* Seed the default comparison with the strongest model against the best
+   value pick: two models that actually disagree, so the page demonstrates a
+   real tradeoff instead of opening on an arbitrary trio. */
+const strongest = MODELS.slice().sort((a, b) => b.scores.overall - a.scores.overall)[0];
+const bestValue = MODELS.slice()
+  .sort((a, b) => valueScore(b) - valueScore(a))
+  .find((model) => model.id !== strongest.id);
+state.compareIds = [strongest.id, bestValue.id];
+
 renderCategories();
 renderBoard();
 renderFeed();
 renderModelIndex();
 renderMethodology();
 initTheme();
-showView(location.hash.slice(1) || 'leaderboard', { fromHash: true });
+applyHash();

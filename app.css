@@ -912,6 +912,10 @@ summary { cursor: pointer; }
 .compare-chip button:hover { color: var(--color-accent-700); }
 .compare-add { width: 230px; }
 .compare-add label { display: block; font-size: 9px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .06em; }
+.compare-add select:disabled { opacity: .55; cursor: not-allowed; }
+.compare-share { width: 100%; margin-top: 8px; font-size: 11px; padding-block: 6px; }
+.compare-chip button:disabled { opacity: .3; cursor: not-allowed; }
+.compare-chip button:disabled:hover { color: var(--color-neutral-600); }
 
 .compare-summary {
   display: grid;
@@ -929,13 +933,15 @@ summary { cursor: pointer; }
 
 .compare-grid,
 .compare-facts { margin-top: 30px; overflow-x: auto; }
+.compare-grid,
+.compare-facts { --compare-cols: 3; }
 .compare-grid-head,
 .compare-capability,
 .compare-fact {
   display: grid;
-  grid-template-columns: minmax(130px, .7fr) repeat(3, minmax(160px, 1fr));
+  grid-template-columns: minmax(130px, .7fr) repeat(var(--compare-cols), minmax(160px, 1fr));
   gap: 20px;
-  min-width: 720px;
+  min-width: calc(130px + var(--compare-cols) * 180px);
 }
 .compare-grid-head {
   padding: 0 8px 8px;
@@ -957,6 +963,12 @@ summary { cursor: pointer; }
   align-items: center;
   gap: 8px;
 }
+/* Overall is a weighted composite of the six rows beneath it, not a seventh
+   peer — set it apart so the grid reads as summary-then-detail. */
+.compare-capability.is-overall {
+  background: color-mix(in srgb, var(--color-text) 4%, transparent);
+}
+.compare-capability.is-overall > span { font-weight: 600; }
 .compare-capability i { height: 6px; background: var(--color-neutral-200); overflow: hidden; }
 .compare-capability b { display: block; height: 100%; background: var(--color-neutral-500); }
 .compare-capability .is-winner b { background: var(--color-accent); }
@@ -1198,7 +1210,9 @@ summary { cursor: pointer; }
   .section-intro h2 { font-size: 34px; }
   .quiet-link { align-self: flex-start; }
   .board-head { display: block; }
-  .board-head .seg { width: 100%; }
+  /* .seg clips its overflow, so the last category (Cyber) is unreachable on
+     narrow phones unless the control scrolls — same treatment as #pricing-mode. */
+  .board-head .seg { width: 100%; overflow-x: auto; }
   .board-legend,
   .board-column-head { display: none; }
   .seg-opt { padding-inline: 10px; font-size: 11px; }
