@@ -231,6 +231,27 @@
   </div>
 </div>
 
+<div class="card-overlay" id="card-overlay" hidden>
+  <button class="card-scrim" id="card-close" aria-label="Close card preview"></button>
+  <div class="card-panel" role="dialog" aria-modal="true" aria-labelledby="card-title">
+    <div class="card-head">
+      <div>
+        <div class="section-kicker">Share card</div>
+        <h3 id="card-title" class="card-name">Preview</h3>
+      </div>
+      <button type="button" class="card-x" id="card-dismiss" aria-label="Close">&times;</button>
+    </div>
+    <div class="card-stage">
+      <img id="card-image" alt="" width="1200" height="630">
+    </div>
+    <div class="card-actions">
+      <button type="button" class="btn btn-primary" id="card-save">Save PNG</button>
+      <button type="button" class="btn btn-secondary" id="card-copy">Copy image</button>
+      <button type="button" class="btn btn-secondary" id="card-share" hidden>Share…</button>
+    </div>
+  </div>
+</div>
+
 <script src="./data.js"></script>
 <script src="./app.js"></script>
 <script src="./cards.js"></script>

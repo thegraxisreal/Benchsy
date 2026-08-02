@@ -374,51 +374,121 @@ function slug(text) {
   return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-/* Copy to clipboard where the browser allows it, and always leave the user
-   with the file. Clipboard image writes need a secure context and are absent
-   in some browsers, so a download is the guaranteed path, never the fallback
-   nobody gets. */
-async function exportCard(canvas, filename, button) {
+/* ── preview ────────────────────────────────────────────────────────── */
+
+/* Nothing leaves the page until the user asks for it. Clicking "Share card"
+   opens the finished PNG in a preview; saving, copying and the native share
+   sheet are separate, deliberate acts from there. */
+const preview = {
+  overlay: document.getElementById('card-overlay'),
+  image: document.getElementById('card-image'),
+  title: document.getElementById('card-title'),
+  save: document.getElementById('card-save'),
+  copy: document.getElementById('card-copy'),
+  share: document.getElementById('card-share'),
+  dismiss: document.getElementById('card-dismiss'),
+  scrim: document.getElementById('card-close'),
+};
+
+let current = null;   // { blob, url, filename, title }
+let opener = null;    // the button that opened the preview, for focus return
+
+function flash(button, message) {
+  const original = button.dataset.label || button.textContent;
+  button.dataset.label = original;
+  button.textContent = message;
+  button.disabled = true;
+  setTimeout(() => {
+    button.textContent = original;
+    button.disabled = false;
+  }, 1800);
+}
+
+/* Sharing a file is only offered when the browser will actually take one —
+   canShare() with the file, not just the presence of navigator.share. */
+function canShareFile(blob, filename) {
+  if (!navigator.share || !navigator.canShare || typeof File !== 'function') return null;
+  const file = new File([blob], filename, { type: 'image/png' });
+  return navigator.canShare({ files: [file] }) ? file : null;
+}
+
+async function openPreview(canvas, filename, title, button) {
   const blob = await canvasBlob(canvas);
   if (!blob) return;
 
-  let copied = false;
-  try {
-    if (navigator.clipboard && window.ClipboardItem) {
-      await navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })]);
-      copied = true;
-    }
-  } catch {
-    copied = false;
-  }
+  if (current) URL.revokeObjectURL(current.url);   // never leak a previous card
+  current = { blob, url: URL.createObjectURL(blob), filename, title };
+  opener = button || null;
 
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  preview.title.textContent = title;
+  preview.image.src = current.url;
+  preview.image.alt = `${title} — Benchsy share card`;
+  preview.share.hidden = !canShareFile(blob, filename);
+  preview.overlay.hidden = false;
+  document.body.classList.add('no-scroll');
+  requestAnimationFrame(() => preview.save.focus());
+}
 
-  if (button) {
-    const original = button.dataset.label || button.textContent;
-    button.dataset.label = original;
-    button.textContent = copied ? 'Copied & saved' : 'Card saved';
-    button.disabled = true;
-    setTimeout(() => {
-      button.textContent = original;
-      button.disabled = false;
-    }, 2200);
+function closePreview() {
+  if (current) URL.revokeObjectURL(current.url);
+  current = null;
+  preview.overlay.hidden = true;
+  preview.image.removeAttribute('src');
+  document.body.classList.remove('no-scroll');
+  if (opener) {
+    opener.focus();
+    opener = null;
   }
 }
 
+preview.save.addEventListener('click', () => {
+  if (!current) return;
+  const link = document.createElement('a');
+  link.href = current.url;
+  link.download = current.filename;
+  link.click();
+  flash(preview.save, 'Saved');
+});
+
+preview.copy.addEventListener('click', async () => {
+  if (!current) return;
+  try {
+    if (!navigator.clipboard || !window.ClipboardItem) throw new Error('unsupported');
+    await navigator.clipboard.write([new ClipboardItem({ 'image/png': current.blob })]);
+    flash(preview.copy, 'Copied');
+  } catch {
+    flash(preview.copy, 'Copy unavailable');
+  }
+});
+
+preview.share.addEventListener('click', async () => {
+  if (!current) return;
+  const file = canShareFile(current.blob, current.filename);
+  if (!file) return;
+  try {
+    await navigator.share({ files: [file], title: current.title });
+  } catch {
+    /* the user dismissing the share sheet is not an error */
+  }
+});
+
+preview.dismiss.addEventListener('click', closePreview);
+preview.scrim.addEventListener('click', closePreview);
+document.addEventListener('keydown', (event) => {
+  if (event.key === 'Escape' && !preview.overlay.hidden) closePreview();
+});
+
+/* ── entry points ───────────────────────────────────────────────────── */
+
 async function shareModelCard(model, button) {
   const canvas = await drawModelCard(model);
-  await exportCard(canvas, `benchsy-${slug(model.name)}.png`, button);
+  await openPreview(canvas, `benchsy-${slug(model.name)}.png`, model.name, button);
 }
 
 async function shareCompareCard(models, button) {
   const canvas = await drawCompareCard(models);
-  await exportCard(canvas, `benchsy-${models.map((m) => slug(m.name)).join('-vs-')}.png`, button);
+  const filename = `benchsy-${models.map((m) => slug(m.name)).join('-vs-')}.png`;
+  await openPreview(canvas, filename, models.map((m) => m.name).join(' vs '), button);
 }
 
 /* Wired here rather than in app.js so the card feature stays self-contained:
