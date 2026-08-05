@@ -1,5 +1,7 @@
 .DS_Store
 *.log
+__pycache__/
+*.py[cod]
 .claude/settings.local.json
 
 # Agent skill libraries installed into the project — not part of the site
