@@ -5,7 +5,8 @@
       "name": "benchsy",
       "runtimeExecutable": "python3",
       "runtimeArgs": ["serve.py"],
-      "port": 4173
+      "port": 4173,
+      "autoPort": true
     }
   ]
 }

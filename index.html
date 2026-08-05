@@ -100,15 +100,15 @@
         <div class="seg" id="categories" role="radiogroup" aria-label="Leaderboard category"></div>
         <div class="board-legend text-muted">
           <span>Benchsy score</span>
-          <span>New this month</span>
+          <span id="board-meta-legend">Community examples</span>
         </div>
       </div>
 
       <div class="board-column-head text-muted">
-        <span>Rank &amp; model</span><span>Capability</span><span>Score</span><span>New</span><span aria-hidden="true"></span>
+        <span>Rank &amp; model</span><span>Capability</span><span>Score</span><span id="board-meta-heading">Build</span><span aria-hidden="true"></span>
       </div>
       <div class="board" id="board" role="list" aria-label="Model rankings"></div>
-      <p class="board-hint text-muted">Select any model to open its full profile.</p>
+      <p class="board-hint text-muted" id="board-hint">Select a model for its full profile. Community builds are independent examples, not provider endorsements.</p>
 
       <section class="feed-section">
         <div class="section-intro compact">
@@ -178,21 +178,59 @@
         <div>
           <div class="section-kicker">Decision mode</div>
           <h2>Which model should you use?</h2>
-          <p class="section-copy text-muted">Pick two or three. Benchsy will make the tradeoffs visible.</p>
+          <p class="section-copy text-muted">Put two or three side by side and Benchsy makes the tradeoffs visible.</p>
+        </div>
+        <div class="compare-actions">
+          <button type="button" class="btn btn-secondary" id="compare-share">Copy link</button>
+          <button type="button" class="btn btn-primary" id="compare-card">Share card</button>
         </div>
       </div>
-      <div class="compare-picker">
-        <div class="compare-slots" id="compare-slots"></div>
-        <div class="compare-add">
-          <label for="compare-select" class="text-muted" id="compare-add-label">Add a model</label>
-          <select id="compare-select" class="input"></select>
-          <button type="button" class="btn btn-secondary compare-share" id="compare-share">Copy link</button>
-          <button type="button" class="btn btn-primary compare-share" id="compare-card">Share card</button>
+
+      <div class="compare-stage">
+        <div class="compare-step">
+          <span class="compare-step-num">1</span>
+          <h3>Choose your models</h3>
+          <span class="compare-step-note text-muted" id="compare-add-label">Add a model</span>
+        </div>
+        <div class="compare-picker">
+          <div class="compare-slots" id="compare-slots"></div>
+          <button type="button" class="compare-add" id="compare-add">
+            <span class="compare-add-plus" aria-hidden="true">+</span>
+            <span class="compare-add-text">Add a model</span>
+          </button>
         </div>
       </div>
-      <div class="compare-summary" id="compare-summary"></div>
-      <div class="compare-grid" id="compare-grid"></div>
-      <div class="compare-facts" id="compare-facts"></div>
+
+      <div class="compare-blank" id="compare-blank" hidden>
+        <p>Nothing selected yet.</p>
+        <p class="text-muted">Add a model above and Benchsy will lay out its scores. Add a second and it starts calling the tradeoffs.</p>
+      </div>
+
+      <div class="compare-stage" id="compare-stage-verdict" hidden>
+        <div class="compare-step">
+          <span class="compare-step-num">2</span>
+          <h3>The short answer</h3>
+        </div>
+        <p class="compare-verdict" id="compare-verdict"></p>
+        <div class="compare-summary" id="compare-summary"></div>
+      </div>
+
+      <div class="compare-stage" id="compare-stage-capability" hidden>
+        <div class="compare-step">
+          <span class="compare-step-num">3</span>
+          <h3>Capability, row by row</h3>
+          <span class="compare-step-note text-muted">Bars are scaled to the models on screen, so small gaps stay visible.</span>
+        </div>
+        <div class="compare-grid" id="compare-grid"></div>
+      </div>
+
+      <div class="compare-stage" id="compare-stage-cost" hidden>
+        <div class="compare-step">
+          <span class="compare-step-num">4</span>
+          <h3>What it costs to run</h3>
+        </div>
+        <div class="compare-facts" id="compare-facts"></div>
+      </div>
     </section>
   </main>
 </div>
@@ -221,7 +259,12 @@
 
 <div class="search-overlay" id="search-overlay" hidden>
   <button class="search-scrim" id="search-close" aria-label="Close search"></button>
-  <div class="search-panel" role="dialog" aria-modal="true" aria-label="Search models">
+  <div class="search-panel" role="dialog" aria-modal="true" aria-labelledby="search-heading">
+    <div class="search-context" id="search-context" hidden>
+      <span class="section-kicker">Add to comparison</span>
+      <span class="text-muted" id="search-context-note"></span>
+    </div>
+    <h2 class="sr-only" id="search-heading">Search models</h2>
     <label class="search-input">
       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
       <input id="global-search" type="search" placeholder="Search models or labs" autocomplete="off">

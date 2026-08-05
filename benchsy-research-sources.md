@@ -1,8 +1,8 @@
 # Benchsy frontier-model research sources
 
-Research date: 2026-07-22 (America/New_York).
+Research date: 2026-08-03 (America/New_York).
 
-Prices are standard, non-batch API prices per one million tokens unless a model note says otherwise. Capability and speed scores are Benchsy estimates normalized across this 16-model set; they are not provider scores. Vendor-reported benchmarks are treated as directional and discounted where independent evidence is sparse.
+Prices are standard, non-batch API prices per one million tokens unless a model note says otherwise. Capability and speed scores are Benchsy estimates normalized across this 17-model set; they are not provider scores. Vendor-reported benchmarks are treated as directional and discounted where independent evidence is sparse.
 
 ## Anthropic
 
@@ -33,7 +33,7 @@ Prices are standard, non-batch API prices per one million tokens unless a model 
 
 ## Alibaba
 
-- Qwen3.7-Max: [official launch](https://www.alibabacloud.com/blog/qwen3-7-the-agent-frontier_603154), [current model catalog](https://www.alibabacloud.com/help/en/model-studio/models), [official pricing](https://www.alibabacloud.com/help/en/model-studio/model-pricing), [Together benchmark summary](https://www.together.ai/models/qwen37-max), [Artificial Analysis profile](https://artificialanalysis.ai/models/qwen3-7-max)
+- Qwen3.8-Max: [official launch and full benchmark table](https://qwen.ai/blog?id=qwen3.8), [official model catalog](https://help.aliyun.com/en/model-studio/text-generation-model/), [official API guide](https://help.aliyun.com/en/model-studio/qwen-api-via-openai-chat-completions). Alibaba has not published a comparable per-token API price, so Benchsy leaves pricing unavailable. Writing and cybersecurity remain explicitly provisional because the launch table includes no writing-only, preference, or security-specific result.
 
 ## DeepSeek
 
@@ -41,7 +41,7 @@ Prices are standard, non-batch API prices per one million tokens unless a model 
 
 ## Moonshot AI
 
-- Kimi K3: [official launch, full benchmark notes, and API pricing](https://www.kimi.com/blog/kimi-k3), [OpenRouter model and pricing cross-check](https://openrouter.ai/moonshotai/kimi-k3)
+- Kimi K3: [official technical report, full benchmark table, weights, and license](https://github.com/MoonshotAI/Kimi-K3), [official launch article](https://www.kimi.com/blog/kimi-k3), [OpenRouter model and pricing cross-check](https://openrouter.ai/moonshotai/kimi-k3)
 
 ## Cross-model benchmark references
 

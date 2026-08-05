@@ -350,13 +350,16 @@ async function drawCompareCard(models) {
   ctx.fillStyle = CARD.muted;
   ctx.font = `400 17px ${CARD.body}`;
   ctx.fillText('Price / 1M', CARD.pad, priceY);
-  const cheapest = Math.min(...models.map((m) => m.inputPrice + m.outputPrice));
+  const pricedModels = models.filter(hasPublishedPrice);
+  const cheapest = pricedModels.length ? Math.min(...pricedModels.map(totalPrice)) : null;
   models.forEach((model, i) => {
-    const win = model.inputPrice + model.outputPrice === cheapest;
+    const win = cheapest != null && totalPrice(model) === cheapest;
     ctx.fillStyle = win ? CARD.accent : CARD.text;
     ctx.font = `600 19px ${CARD.heading}`;
     ctx.textAlign = 'right';
-    ctx.fillText(`${formatPrice(model.inputPrice)} / ${formatPrice(model.outputPrice)}`,
+    ctx.fillText(hasPublishedPrice(model)
+      ? `${formatPrice(model.inputPrice)} / ${formatPrice(model.outputPrice)}`
+      : 'Not published',
       colX(i) + colW, priceY);
     ctx.textAlign = 'left';
   });

@@ -79,6 +79,28 @@
       "terms": "Editorial use only by accredited media; credit \"Source: www.alibabagroup.com.\" Other use requires written permission. Images may be proportionally resized but not otherwise altered."
     },
     {
+      "slug": "qwen",
+      "lab": "Alibaba",
+      "file": "qwen.svg",
+      "source": "https://unpkg.com/@lobehub/icons-static-svg@1.94.0/icons/qwen.svg",
+      "termsSource": "https://github.com/lobehub/lobe-icons",
+      "official": false,
+      "kind": "icon",
+      "terms": "The Lobe Icons package is MIT licensed; Qwen and Alibaba trademark rights remain with their owner.",
+      "darkNote": "No separate inverse vector is included, so the black mark sits on a light plate in dark mode."
+    },
+    {
+      "slug": "glm",
+      "lab": "Zhipu AI",
+      "file": "glm.svg",
+      "source": "https://unpkg.com/@lobehub/icons-static-svg@1.94.0/icons/zhipu.svg",
+      "termsSource": "https://github.com/lobehub/lobe-icons",
+      "official": false,
+      "kind": "icon",
+      "terms": "The Lobe Icons package is MIT licensed; GLM and Zhipu trademark rights remain with their owner.",
+      "darkNote": "No separate inverse vector is included, so the black mark sits on a light plate in dark mode."
+    },
+    {
       "slug": "deepseek",
       "lab": "DeepSeek",
       "file": "deepseek.svg",

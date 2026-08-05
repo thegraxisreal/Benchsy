@@ -416,16 +416,19 @@ summary { cursor: pointer; }
   object-fit: contain;
   display: block;
 }
+/* GLM's radial mark carries finer detail and needs a little more optical size. */
+.lab-logo-glm { width: 72%; height: 72%; }
 /* The lab-detail mark is larger, so its logo can breathe a little more. */
 .lab-detail-mark .lab-logo { width: 58%; height: 58%; }
+.lab-detail-mark .lab-logo-glm { width: 68%; height: 68%; }
 
 /* Show the theme-matched variant; labs with only one file use the base .lab-logo. */
 .lab-logo-dk { display: none; }
 :root[data-theme="dark"] .lab-logo-lt { display: none; }
 :root[data-theme="dark"] .lab-logo-dk { display: block; }
 
-/* xAI and Moonshot ship only a black mark; float it on a light plate in dark
-   mode so it stays visible without recoloring the artwork. */
+/* Black-only marks float on a light plate in dark mode so they stay visible
+   without recoloring the artwork. */
 :root[data-theme="dark"] .has-plate { background: #f4f2ef; }
 
 .row-id { display: flex; flex-direction: column; gap: 1px; min-width: 0; }
@@ -490,6 +493,36 @@ summary { cursor: pointer; }
 .row-change.is-down { color: var(--color-neutral-600); }
 .row-change.is-neutral { color: var(--color-neutral-500); }
 .row-change .tag { padding: 2px 5px; font-size: 8px; }
+
+/* Overall and Coding reuse the compact recency column for a community-made
+   example. The link is a sibling of the row button, not nested inside it, so
+   both controls retain valid keyboard and pointer behavior. */
+.row-showcase {
+  position: absolute;
+  z-index: 2;
+  top: calc(var(--row-line, 88px) / 2);
+  right: 62px;
+  width: 58px;
+  transform: translateY(-50%);
+  text-align: right;
+  font-size: 11px;
+  line-height: 1;
+}
+.row-showcase[hidden],
+.row-showcase-link[hidden],
+.row-showcase-pending[hidden] { display: none; }
+.row-showcase-link {
+  color: var(--color-accent-700);
+  text-decoration: none;
+  font-weight: 600;
+  text-underline-offset: 3px;
+}
+.row-showcase-link:hover { text-decoration: underline; }
+.row-showcase-link:focus-visible {
+  outline: 1px solid var(--color-accent);
+  outline-offset: 4px;
+}
+.row-showcase-pending { color: var(--color-neutral-500); }
 
 /* — in-row detail panel — */
 
@@ -611,6 +644,105 @@ summary { cursor: pointer; }
   margin-bottom: 3px;
 }
 .rd-guideitem p { margin: 0; font-size: 13px; line-height: 1.5; }
+.rd-community {
+  display: grid;
+  grid-template-columns: minmax(0, 1.65fr) minmax(300px, .85fr);
+  gap: 34px;
+  margin-top: 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--color-divider);
+  align-items: start;
+}
+.rd-community:not(.has-media) { grid-template-columns: minmax(0, 620px); }
+.rd-community[hidden],
+.rd-community-media[hidden] { display: none; }
+.rd-community-media {
+  position: relative;
+  min-width: 0;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #0e0e0e;
+  border: 1px solid color-mix(in srgb, var(--color-text) 16%, transparent);
+}
+.rd-community-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #0e0e0e;
+}
+.rd-community-watch {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 7px 10px;
+  background: color-mix(in srgb, #000 80%, transparent);
+  color: #fff;
+  font-size: 10px;
+  font-weight: 600;
+  text-decoration: none;
+  backdrop-filter: blur(8px);
+}
+.rd-community-watch:hover { background: #000; }
+.rd-community-copy { min-width: 0; padding-top: 3px; }
+.rd-community-link {
+  color: var(--color-accent-700);
+  font-family: var(--font-heading);
+  font-size: 17px;
+  font-weight: 600;
+  text-decoration: none;
+}
+.rd-community-link:hover { text-decoration: underline; text-underline-offset: 3px; }
+.rd-community-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+}
+.rd-community-byline { font-size: 10px; }
+.rd-community-byline[hidden] { display: none; }
+.rd-community-creator {
+  color: inherit;
+  text-decoration: none;
+}
+.rd-community-creator:hover { color: var(--color-accent-700); text-decoration: underline; }
+.rd-community-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-top: 10px;
+}
+.rd-community-tags:empty,
+.rd-community-summary:empty,
+.rd-community-highlights:empty,
+.rd-community-tools:empty { display: none; }
+.rd-community-tags .tag {
+  padding: 3px 6px;
+  font-size: 8px;
+  letter-spacing: .04em;
+}
+.rd-community-summary {
+  margin: 10px 0 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.rd-community-highlights {
+  margin: 9px 0 0;
+  padding-left: 16px;
+  font-size: 11px;
+  line-height: 1.5;
+}
+.rd-community-highlights li + li { margin-top: 3px; }
+.rd-community-tools {
+  display: grid;
+  grid-template-columns: max-content 1fr;
+  gap: 5px 10px;
+  margin: 11px 0 0;
+  font-size: 10px;
+  line-height: 1.45;
+}
+.rd-community-tools dt { color: var(--color-accent-700); font-weight: 600; }
+.rd-community-tools dd { margin: 0; color: var(--color-neutral-700); }
 .rd-compare { align-self: flex-start; margin-top: 4px; }
 
 /* — activity — */
@@ -875,83 +1007,255 @@ summary { cursor: pointer; }
 
 /* — compare — */
 
+/* The view is read top to bottom as a decision: pick, read the verdict, then
+   drill into detail. Numbered stages make that order explicit instead of
+   leaving four unlabelled slabs of table. */
+.compare-actions { display: flex; gap: 8px; align-self: flex-end; }
+.compare-actions .btn { font-size: 12px; padding-block: 7px; }
+.compare-stage { margin-top: 34px; }
+.compare-stage:first-of-type { margin-top: 22px; }
+.compare-step {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--color-divider);
+}
+.compare-step h3 { margin: 0; font-size: 19px; }
+.compare-step-num {
+  align-self: center;
+  display: grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--color-accent) 16%, transparent);
+  color: var(--color-accent-700);
+  font-family: var(--font-heading);
+  font-weight: 600;
+  font-size: 12px;
+}
+.compare-step-note { font-size: 11px; margin-left: auto; }
+
 .compare-picker {
   display: flex;
-  justify-content: space-between;
-  align-items: flex-end;
-  gap: 24px;
-  padding: 16px 0;
-  border-block: 1px solid var(--color-divider);
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 16px 0 4px;
 }
-.compare-slots { display: flex; gap: 12px; flex-wrap: wrap; }
+.compare-slots { display: contents; }
+.compare-chip,
+.compare-add {
+  flex: 1 1 210px;
+  min-width: 200px;
+  min-height: 62px;
+  border-radius: var(--radius-md);
+}
 .compare-chip {
+  position: relative;
   display: grid;
-  grid-template-columns: 30px minmax(100px, auto) 20px;
-  gap: 8px;
+  grid-template-columns: 32px minmax(0, 1fr) auto auto;
+  gap: 10px;
   align-items: center;
+  padding: 11px 12px;
+  border: 1px solid var(--color-divider);
+  background: color-mix(in srgb, var(--color-text) 3%, transparent);
 }
+/* A hairline in the column's own accent ties each card to its table column. */
+.compare-chip::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 2px;
+  background: var(--color-accent);
+  opacity: calc(1 - (var(--col-index, 0) * 0.3));
+}
+.compare-chip[data-col='2'] { --col-index: 1; }
+.compare-chip[data-col='3'] { --col-index: 2; }
 .compare-chip > i {
   display: grid;
   place-items: center;
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   border: 1px solid var(--color-divider);
   font-family: var(--font-heading);
   font-style: normal;
 }
-.compare-chip > span { display: flex; flex-direction: column; }
-.compare-chip strong { font-family: var(--font-heading); font-size: 14px; }
-.compare-chip small { color: var(--color-neutral-600); font-size: 8px; }
-.compare-chip button {
+.compare-chip-id { display: flex; flex-direction: column; min-width: 0; }
+/* Model names run long ("Grok 4.1 Fast Reasoning"). Wrapping to a second line
+   keeps the whole name readable where truncation would hide the part that
+   distinguishes one variant from another. */
+.compare-chip strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-family: var(--font-heading);
+  font-size: 15px;
+  line-height: 1.2;
+  overflow: hidden;
+}
+.compare-chip small { color: var(--color-neutral-600); font-size: 9px; }
+.compare-chip-score { display: flex; flex-direction: column; align-items: flex-end; margin-right: 4px; }
+.compare-chip-score b { font-family: var(--font-heading); font-size: 17px; line-height: 1.1; }
+.compare-chip-score small {
+  font-size: 8px;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  color: var(--color-neutral-600);
+}
+.compare-chip-x {
   border: 0;
   background: transparent;
   cursor: pointer;
+  font-size: 16px;
+  line-height: 1;
+  padding: 2px 0 2px 2px;
   color: var(--color-neutral-600);
 }
-.compare-chip button:hover { color: var(--color-accent-700); }
-.compare-add { width: 230px; }
-.compare-add label { display: block; font-size: 9px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: .06em; }
-.compare-add select:disabled { opacity: .55; cursor: not-allowed; }
-.compare-share { width: 100%; margin-top: 8px; font-size: 11px; padding-block: 6px; }
+.compare-chip-x:hover { color: var(--color-accent-700); }
+.compare-chip-x:disabled { opacity: .3; cursor: not-allowed; }
+.compare-chip-x:disabled:hover { color: var(--color-neutral-600); }
+
+/* An empty slot shaped like the filled ones, opening the site's search panel.
+   Seventeen models is past the point where a dropdown is a reasonable way to
+   find the one you mean. */
+.compare-add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 11px 12px;
+  border: 1px dashed color-mix(in srgb, var(--color-text) 30%, transparent);
+  background: transparent;
+  color: var(--color-neutral-700);
+  font-family: inherit;
+  cursor: pointer;
+}
+.compare-add:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent-700);
+}
+.compare-add-plus { font-family: var(--font-heading); font-size: 20px; line-height: 1; }
+.compare-add-text { font-size: 12px; }
+/* At capacity the slot can only explain how to make room, so it drops to a
+   full-width note rather than holding a slot-height frame open. */
+.compare-add.is-full {
+  flex-basis: 100%;
+  min-height: 0;
+  padding: 7px;
+  border-style: solid;
+  border-color: var(--color-divider);
+  color: var(--color-neutral-600);
+}
+.compare-add.is-full .compare-add-plus { display: none; }
+
+.compare-blank {
+  margin-top: 30px;
+  padding: 34px 0 40px;
+  border-top: 1px solid var(--color-divider);
+}
+.compare-blank[hidden] { display: none; }
+.compare-blank p:first-child {
+  margin: 0 0 6px;
+  font-family: var(--font-heading);
+  font-size: 24px;
+}
+.compare-blank p:last-child { margin: 0; max-width: 48ch; font-size: 13px; }
 .rd-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .rd-actions .btn { flex: 1 1 auto; }
-.compare-chip button:disabled { opacity: .3; cursor: not-allowed; }
-.compare-chip button:disabled:hover { color: var(--color-neutral-600); }
 
+.compare-verdict {
+  margin: 18px 0 0;
+  max-width: 68ch;
+  font-size: 16px;
+  line-height: 1.5;
+  color: color-mix(in srgb, var(--color-text) 80%, transparent);
+}
+.compare-verdict strong { font-family: var(--font-heading); font-size: 18px; color: var(--color-text); }
+
+.compare-summary[hidden] { display: none; }
 .compare-summary {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
+  margin-top: 18px;
+  border-top: 1px solid var(--color-divider);
   border-bottom: 1px solid var(--color-divider);
 }
 .compare-summary > div {
-  padding: 20px 18px 20px 0;
+  padding: 18px 18px 18px 0;
   border-right: 1px solid var(--color-divider);
 }
 .compare-summary > div + div { padding-left: 18px; }
 .compare-summary > div:last-child { border-right: 0; }
-.compare-summary strong { display: block; font-family: var(--font-heading); font-size: 22px; }
-.compare-summary p { margin: 3px 0 0; color: var(--color-neutral-600); font-size: 10px; }
+.compare-summary-name { display: flex; align-items: center; gap: 8px; margin-top: 4px; }
+.compare-summary-name i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 1px solid var(--color-divider);
+  font-family: var(--font-heading);
+  font-style: normal;
+  font-size: 10px;
+}
+.compare-summary strong { display: block; font-family: var(--font-heading); font-size: 21px; line-height: 1.15; }
+.compare-summary p { margin: 5px 0 0; color: var(--color-neutral-600); font-size: 11px; }
 
 .compare-grid,
-.compare-facts { margin-top: 30px; overflow-x: auto; }
+.compare-facts { overflow-x: auto; }
 .compare-grid,
 .compare-facts { --compare-cols: 3; }
+/* Column separation is padding inside the data cells, not grid gap: the label
+   column is sticky, and a gap would leave a transparent strip beside it where
+   scrolled content shows through. */
 .compare-grid-head,
 .compare-capability,
 .compare-fact {
   display: grid;
-  grid-template-columns: minmax(130px, .7fr) repeat(var(--compare-cols), minmax(160px, 1fr));
-  gap: 20px;
-  min-width: calc(130px + var(--compare-cols) * 180px);
+  grid-template-columns: minmax(140px, .7fr) repeat(var(--compare-cols), minmax(190px, 1fr));
+  min-width: calc(140px + var(--compare-cols) * 190px);
 }
+.compare-grid-head > :not(.compare-grid-lead),
+.compare-capability > :not(.compare-row-label),
+.compare-fact > :not(.compare-row-label) { padding-left: 20px; }
 .compare-grid-head {
-  padding: 0 8px 8px;
+  align-items: end;
+  padding: 14px 8px 10px;
+}
+.compare-grid-lead {
   color: var(--color-neutral-600);
   font-size: 9px;
   letter-spacing: .06em;
   text-transform: uppercase;
 }
+.compare-col { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.compare-col i {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 1px solid var(--color-divider);
+  font-family: var(--font-heading);
+  font-style: normal;
+  font-size: 10px;
+}
+.compare-col > span { display: flex; flex-direction: column; min-width: 0; }
+.compare-col strong {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  font-family: var(--font-heading);
+  font-size: 14px;
+  line-height: 1.15;
+  overflow: hidden;
+}
+.compare-col small { color: var(--color-neutral-600); font-size: 9px; }
 .compare-capability,
 .compare-fact {
   align-items: center;
@@ -959,24 +1263,72 @@ summary { cursor: pointer; }
   border-top: 1px solid var(--color-divider);
   font-size: 11px;
 }
+/* Both tables scroll sideways on narrow screens, where a row that has lost its
+   own label is unreadable. Pin the label column so the row always says what it
+   is measuring. The opaque background is what lets cells slide under it. */
+.compare-grid-lead,
+.compare-row-label {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1px;
+  padding: 12px 0;
+  margin-block: -12px;
+  background: var(--color-bg);
+}
+.compare-capability.is-overall > .compare-row-label {
+  background: color-mix(in srgb, var(--color-text) 4%, var(--color-bg));
+}
+.compare-row-label em {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: .04em;
+  color: var(--color-neutral-600);
+}
 .compare-capability > div {
   display: grid;
   grid-template-columns: 1fr 36px;
+  grid-template-areas: 'bar score' 'delta delta';
   align-items: center;
-  gap: 8px;
+  gap: 4px 8px;
 }
+.compare-capability i { grid-area: bar; height: 6px; background: var(--color-neutral-200); overflow: hidden; }
+.compare-capability strong { grid-area: score; text-align: right; font-size: 11px; }
+.compare-capability .compare-delta { grid-area: delta; text-align: right; }
+.compare-fact > div { display: flex; flex-direction: column; gap: 2px; }
+/* The gap or the win, spelled out — the number alone leaves the reader doing
+   arithmetic to answer the only question they came with. */
+.compare-delta {
+  font-style: normal;
+  font-size: 9px;
+  letter-spacing: .04em;
+  color: var(--color-neutral-600);
+}
+.is-winner .compare-delta {
+  align-self: flex-end;
+  justify-self: end;
+  padding: 1px 5px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--color-accent) 18%, transparent);
+  color: var(--color-accent-700);
+  text-transform: uppercase;
+  font-size: 8px;
+}
+.compare-fact .is-winner .compare-delta { align-self: flex-start; justify-self: start; }
 /* Overall is a weighted composite of the six rows beneath it, not a seventh
    peer — set it apart so the grid reads as summary-then-detail. */
 .compare-capability.is-overall {
   background: color-mix(in srgb, var(--color-text) 4%, transparent);
 }
 .compare-capability.is-overall > span { font-weight: 600; }
-.compare-capability i { height: 6px; background: var(--color-neutral-200); overflow: hidden; }
 .compare-capability b { display: block; height: 100%; background: var(--color-neutral-500); }
 .compare-capability .is-winner b { background: var(--color-accent); }
-.compare-capability strong { text-align: right; font-size: 11px; }
 .compare-capability .is-winner strong,
-.compare-fact .is-winner { color: var(--color-accent-700); }
+.compare-fact .is-winner strong { color: var(--color-accent-700); }
 .compare-fact strong { font-family: var(--font-heading); font-size: 16px; }
 
 /* — methodology dialog — */
@@ -1074,6 +1426,18 @@ summary { cursor: pointer; }
   border: 1px solid var(--color-divider);
   box-shadow: var(--shadow-lg);
 }
+/* Shown only when the panel is adding to a comparison, so the same overlay
+   never leaves you guessing which of its two jobs it is doing. */
+.search-context {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px 0;
+  font-size: 10px;
+}
+.search-context[hidden] { display: none; }
+.search-empty { padding: 18px 16px 20px; margin: 0; border-top: 1px solid var(--color-divider); font-size: 12px; }
 .search-input { margin: 0 16px; padding: 15px 0; min-width: 0; }
 .search-input input { font-size: 16px; }
 .search-input kbd {
@@ -1249,7 +1613,7 @@ summary { cursor: pointer; }
     align-items: start;
   }
   .rd-guide .rd-h { grid-column: 1 / -1; margin-bottom: 4px; }
-  .rd-compare { grid-column: 1 / -1; }
+  .rd-actions { grid-column: 1 / -1; }
   .labs-layout { grid-template-columns: 1fr 340px; gap: 26px; }
   .lab-placements i:nth-child(n+3) { display: none; }
 }
@@ -1270,10 +1634,9 @@ summary { cursor: pointer; }
   .hero { padding-top: 38px; margin-bottom: 34px; }
   .rd-grid { grid-template-columns: 1fr; gap: 26px; }
   .rd-guide { grid-template-columns: 1fr 1fr; }
+  .rd-community { grid-template-columns: 1fr; gap: 24px; }
   .labs-layout { grid-template-columns: 1fr; }
   .lab-detail { position: static; }
-  .compare-picker { align-items: stretch; flex-direction: column; }
-  .compare-add { width: 100%; }
 }
 
 @media (max-width: 640px) {
@@ -1304,7 +1667,8 @@ summary { cursor: pointer; }
   }
   .row-avatar,
   .row-track,
-  .row-change { display: none; }
+  .row-change,
+  .row-showcase { display: none; }
   .row-rank { font-size: 20px; }
   .row.is-leader .row-rank { font-size: 28px; }
   .row-name { font-size: 15px; }
@@ -1313,6 +1677,7 @@ summary { cursor: pointer; }
   .rd-inner { padding: 22px 14px 26px; }
   .rd-specs { grid-template-columns: 1fr 1fr; }
   .rd-guide { grid-template-columns: 1fr; }
+  .rd-community { margin-top: 24px; padding-top: 18px; }
   .feed-section { margin-top: 50px; }
   .feed-item { grid-template-columns: 42px 1fr auto; gap: 8px; }
   .feed-text { font-size: 11px; }
@@ -1360,16 +1725,25 @@ summary { cursor: pointer; }
   .compare-grid-head,
   .compare-capability,
   .compare-fact {
-    grid-template-columns: 110px repeat(3, 140px);
-    min-width: 570px;
-    gap: 12px;
+    grid-template-columns: 100px repeat(var(--compare-cols), 140px);
+    min-width: calc(100px + var(--compare-cols) * 140px);
   }
-  .compare-chip {
-    grid-template-columns: 26px 1fr 18px;
-    width: calc(50% - 6px);
-  }
-  .compare-chip > i { width: 26px; height: 26px; }
-  .compare-chip strong { font-size: 12px; }
+  .compare-grid-head > :not(.compare-grid-lead),
+  .compare-capability > :not(.compare-row-label),
+  .compare-fact > :not(.compare-row-label) { padding-left: 12px; }
+  .compare-col small { display: none; }
+  .compare-col strong { font-size: 12px; }
+  .compare-chip,
+  .compare-add { flex-basis: 100%; min-width: 0; min-height: 54px; }
+  .compare-chip { grid-template-columns: 28px minmax(0, 1fr) auto auto; }
+  .compare-chip > i { width: 28px; height: 28px; }
+  .compare-chip strong { font-size: 13px; }
+  .compare-step h3 { font-size: 17px; }
+  .compare-step-note { flex-basis: 100%; margin-left: 0; }
+  .compare-verdict { font-size: 15px; }
+  .compare-verdict strong { font-size: 16px; }
+  .compare-actions { align-self: stretch; }
+  .compare-actions .btn { flex: 1; }
   .method-shell { padding: 20px; }
   .method-head h2 { font-size: 29px; }
   .weight-row { grid-template-columns: minmax(150px, 1fr) 55px 32px; gap: 8px; }

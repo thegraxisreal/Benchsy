@@ -4,7 +4,7 @@ Interactive frontend concept for understanding the AI model landscape at a
 glance. Benchsy shows which models lead overall and where specialists win
 across coding, writing, chat, science, computer use, and cybersecurity.
 
-The board tracks 17 frontier models from 8 labs, researched on **July 22, 2026**.
+The board tracks 17 frontier models from 8 labs, researched on **August 3, 2026**.
 Prices, context windows, release dates and status come from provider
 documentation; the 0–100 capability scores are Benchsy's own normalization
 across the tracked set, with the benchmark basis recorded for every score. The
@@ -38,13 +38,14 @@ shows current data. Pass a port to override the default: `python3 serve.py 8080`
 | `index.html` | Product shell and the Leaderboard, Pricing, Models, Labs, Compare, search, and methodology surfaces. |
 | `styles.css` | The **Classical** design system — tokens and component classes, verbatim from the design project. Retune the look here. |
 | `app.css` | Product layout, responsive behavior, data visualizations, motion, and the dark palette. |
-| `data.js` | The single product-data source: categories and weights, 16 models, 8 labs, pricing, recent releases, and the source list. |
+| `data.js` | The single product-data source: categories and weights, 17 models, 8 labs, pricing, recent releases, and the source list. |
 | `app.js` | Rendering, view navigation, sorting, selection, comparison, search, and dialogs. |
 | `benchsy-research.json` | The research record `data.js` was derived from — one entry per model, including the benchmark basis for each score. |
 | `benchsy-research-sources.md` | Primary sources, by lab, behind the research record. |
 | `serve.py` | Dev server — `http.server` with caching disabled so data edits always show. |
 | `assets/og-source.html` | Source for the link-preview card. Edit this, never `og.png`. |
 | `tools/make-og.sh` | Re-renders `assets/og.png` and `assets/apple-touch-icon.png` via headless Chrome. |
+| `tools/validate-data.mjs` | Checks model/research parity, scores, prices, category weights, sources, and research dates. |
 
 ## How the board works
 
@@ -56,6 +57,14 @@ remains the centerpiece of the design.
 Hovering or focusing previews a model in the fingerprint panel. Clicking pins
 it across category switches. The same centralized model object drives pricing,
 the model index, lab profiles, comparison, and search.
+
+Run `node tools/validate-data.mjs` after every research refresh. It catches
+missing research records, duplicate models, partial pricing, invalid scores,
+invalid community-build links, and mismatched research dates before deployment.
+
+Community examples for the Overall and Coding boards live in the
+`COMMUNITY_BUILDS` map in `data.js`. Add a project name and HTTPS URL under the
+model id; the compact row link and expanded profile update together.
 
 ## Configuration
 
@@ -93,5 +102,8 @@ const CONFIG = {
 - **No backend.** Nothing polls, persists remotely, or requires authentication.
 - **Hash views.** Product navigation uses `#leaderboard`, `#pricing`, `#models`,
   `#labs`, and `#compare`, so every primary surface is directly reachable.
+  Compare carries its selection — `#compare=claude-opus-5,grok-4-1-fast` — and
+  accepts zero to three models, building up from an empty state to a single
+  profile to a full comparison.
 - **Replaceable data.** `data.js` is deliberately the only product-data source,
   making a future API migration straightforward.

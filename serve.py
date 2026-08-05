@@ -7,6 +7,9 @@ cache data.js and app.js heuristically — so edits to the board data don't
 show up until a hard reload. Here they always do.
 
     python3 serve.py [port]
+
+Port resolution: the CLI argument wins, then $PORT (set by the preview
+harness, which assigns a free port), then DEFAULT_PORT.
 """
 
 import os
@@ -32,7 +35,7 @@ class NoCacheHandler(SimpleHTTPRequestHandler):
 
 
 def main():
-    port = int(sys.argv[1]) if len(sys.argv) > 1 else DEFAULT_PORT
+    port = int(sys.argv[1]) if len(sys.argv) > 1 else int(os.environ.get('PORT') or DEFAULT_PORT)
     handler = partial(NoCacheHandler, directory=os.path.dirname(os.path.abspath(__file__)))
     with ThreadingHTTPServer(('', port), handler) as httpd:
         print(f'Benchsy on http://localhost:{port}  (no-store: edits show on plain reload)')
